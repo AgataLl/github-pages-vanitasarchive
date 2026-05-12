@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vanitas Archive</title>
+
+  <!-- FUENTES -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================
+       RESET & BASE
+    ========================================= */
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{ scroll-behavior:smooth; }
+
+    body {
+      background:#050505;
+      color:#d8d2ca;
+      font-family:'Cormorant Garamond', serif;
+      min-height:100vh;
+      overflow-x:hidden;
+      letter-spacing:0.03em;
+      position:relative;
+      cursor: url('velita.png') 32 5, auto;
+    }
+
+    a, .book, .entry, button {
+      cursor: url('velita.png') 32 5, pointer;
+    }
+
+    /* CAPAS DE EFECTOS */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background-image: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
+      opacity:0.18;
+      pointer-events:none;
+      z-index:1000;
+    }
+
+    .darkness{
+      position:fixed;
+      inset:0;
+      background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.55) 35%, rgba(0,0,0,0.94) 100%);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .cursor-glow{
+      position:fixed;
+      width:450px;
+      height:450px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(255,210,140,0.18) 0%, rgba(120,40,10,0.10) 20%, transparent 70%);
+      pointer-events:none;
+      transform:translate(-50%,-50%);
+      z-index:2;
+      mix-blend-mode:screen;
+      filter:blur(20px);
+      animation:flicker 4s infinite alternate;
+    }
+
+    @keyframes flicker{
+      0%, 100% { opacity:0.95; transform:translate(-50%,-50%) scale(1); }
+      50% { opacity:1; transform:translate(-50%,-50%) scale(1.03); }
+    }
+
+    .dust{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:0.12;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.45) 1px, transparent 1px);
+      background-size:120px 120px;
+      animation:dustMove 40s linear infinite;
+      z-index:1;
+    }
+
+    @keyframes dustMove{
+      from{ transform:translateY(0); }
+      to{ transform:translateY(-120px); }
+    }
+
+    /* NAVEGACIÓN */
+    nav{
+      position:fixed;
+      top:0; width:100%;
+      padding:1.2rem 2rem;
+      backdrop-filter:blur(10px);
+      background:rgba(0,0,0,0.35);
+      border-bottom: 1px solid rgba(191,155,107,0.08);
+      z-index:999;
+    }
+
+    nav ul{ display:flex; justify-content:center; gap:2rem; list-style:none; }
+
+    nav a{
+      text-decoration:none;
+      color:#cfc6bc;
+      font-family:'IBM Plex Mono', monospace;
+      font-size:0.75rem;
+      letter-spacing:0.2em;
+      text-transform:uppercase;
+      transition:0.3s;
+      position:relative;
+    }
+
+    nav a:hover{ color:#f0e2c6; }
+    nav a::after{
+      content:""; position:absolute; left:0; bottom:-4px;
+      width:0%; height:1px; background:#b78d58; transition:0.3s;
+    }
+    nav a:hover::after{ width:100%; }
+
+    /* HERO */
+    header{
+      height:100vh;
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      text-align:center; position:relative; z-index:2;
+    }
+
+    .hero-bg{
+      position:absolute; font-size:13rem; opacity:0.03;
+      letter-spacing:0.4em; user-select:none; pointer-events:none;
+      color: #fff;
+    }
+
+    h1{
+      font-size:6rem; font-weight:300; letter-spacing:0.35em;
+      text-transform:uppercase; color:#f3e7d5;
+      text-shadow: 0 0 10px rgba(255,255,255,0.08), 0 0 40px rgba(120,0,0,0.2);
+      animation:float 5s ease-in-out infinite;
+    }
+
+    @keyframes float{
+      0%, 100% { transform:translateY(0); }
+      50% { transform:translateY(-10px); }
+    }
+
+    .subtitle{ margin-top:1.5rem; max-width:700px; line-height:1.8; font-size:1.3rem; color:#a79a8d; }
+
+    /* MAIN & GRID */
+    main{ width:min(1300px, 92%); margin:auto; padding:6rem 0; position:relative; z-index:2; }
+    section{ margin-bottom:8rem; position:relative; }
+    .section-title{ font-size:2.7rem; margin-bottom:2rem; font-weight:400; color:#f0e8df; border-left: 2px solid rgba(191,155,107,0.25); padding-left:1rem; }
+    .bg-word{ position:absolute; top:-50px; left:0; font-size:10rem; opacity:0.03; letter-spacing:0.25em; pointer-events:none; user-select:none; }
+
+    .grid-layout{ display:grid; grid-template-columns:2fr 1fr; gap:1.5rem; }
+
+    /* ENTRADAS */
+    .entry{
+      background: linear-gradient(to bottom, rgba(20,16,12,0.94), rgba(8,8,8,0.98));
+      border: 1px solid rgba(191,155,107,0.08);
+      padding:2rem; transition: 0.4s ease;
+      box-shadow: inset 0 0 40px rgba(255,220,160,0.02), 0 0 40px rgba(0,0,0,0.4);
+    }
+    .entry:hover{ transform: translateY(-6px); border-color: rgba(191,155,107,0.18); }
+    .entry h3{ font-size:2rem; font-weight:400; margin-bottom:1rem; color:#ede5db; }
+    .entry p{ font-size:1.15rem; line-height:1.9; color:#c9c0b8; }
+
+    /* BIBLIOTECA */
+    .library{ display:flex; flex-direction:column; gap:3rem; }
+    .shelf{
+      position:relative; padding:2rem 1rem 3rem;
+      background: linear-gradient(to bottom, rgba(25,18,12,0.6), rgba(10,8,6,0.95));
+      border:1px solid rgba(191,155,107,0.08);
+      display:flex; gap:1.5rem; overflow-x:auto;
+    }
+    .shelf::after{
+      content:""; position:absolute; bottom:0; left:0; right:0; height:12px;
+      background:linear-gradient(to right,#2a1e16,#120d09); border-top:1px solid rgba(191,155,107,0.15);
+    }
+
+    /* LIBROS */
+    .book{ flex:0 0 260px; height:220px; position:relative; perspective:1000px; }
+    .spine{
+      position:absolute; left:0; top:0; bottom:0; width:30px;
+      background:linear-gradient(to bottom,#1a1410,#0c0a08);
+      border-right:1px solid rgba(191,155,107,0.15); z-index:2;
+    }
+    .cover{
+      position:absolute; left:30px; right:0; top:0; bottom:0;
+      background:linear-gradient(to bottom, rgba(25,20,15,0.95), rgba(10,8,6,0.98));
+      border:1px solid rgba(191,155,107,0.08); padding:1rem;
+      transform-origin:left; transition:0.5s ease; z-index:3;
+    }
+    .book:hover .cover{ transform:rotateY(-25deg); }
+    .pages{
+      position:absolute; left:35px; right:5px; top:5px; bottom:5px;
+      background:#d8d2ca; color:#2a1e16; padding:1rem;
+      opacity:0; transition:0.4s; font-size:0.9rem; z-index:1;
+    }
+    .book:hover .pages{ opacity:1; transform: translateX(10px); }
+
+    /* MUSIC PLAYER */
+    .music-player{
+      position:fixed; bottom:20px; right:20px; width:320px; padding:1.2rem;
+      z-index:9999; background:rgba(10,8,6,0.95);
+      border: 1px solid rgba(191,155,107,0.12); backdrop-filter:blur(12px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+    .music-header{ display:flex; align-items:center; gap:1rem; margin-bottom:1.2rem; }
+    .vinyl{
+      width:48px; height:48px; border-radius:50%;
+      background: radial-gradient(circle, #111 25%, #333 45%, #000 100%);
+      border: 1px solid rgba(191,155,107,0.15); animation:spin 8s linear infinite;
+      animation-play-state: paused; /* Se activa al sonar */
+    }
+    @keyframes spin{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+    .music-title{ font-size:1.1rem; color:#e7d7c1; }
+    .music-subtitle{ font-family:'IBM Plex Mono', monospace; font-size:0.65rem; color:#a68560; text-transform:uppercase; }
+
+    /* Estilo del reproductor nativo */
+    audio {
+      width: 100%;
+      height: 30px;
+      filter: sepia(100%) brightness(0.7) contrast(1.2) invert(100%); /* Efecto para que combine con el dorado/negro */
+      opacity: 0.6;
+      transition: 0.3s;
+    }
+    audio:hover { opacity: 0.9; }
+
+    footer{ padding:4rem 2rem; text-align:center; border-top: 1px solid rgba(191,155,107,0.05); font-family:'IBM Plex Mono', monospace; font-size:0.75rem; color:#746b64; }
+
+    @media(max-width:900px){
+      h1{ font-size:3.5rem; }
+      .grid-layout{ grid-template-columns:1fr; }
+      .music-player{ width:90%; right:5%; }
+      body, a, .book, .entry { cursor: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="darkness"></div>
+  <div class="cursor-glow"></div>
+  <div class="dust"></div>
+
+  <nav>
+    <ul>
+      <li><a href="#about">about</a></li>
+      <li><a href="#library">library</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <div class="hero-bg">VANITAS</div>
+    <h1>Vanitas Archive</h1>
+    <p class="subtitle">Un archivo olvidado oculto entre polvo, lluvia y páginas prohibidas.</p>
+  </header>
+
+  <main>
+    <section id="about">
+      <div class="bg-word">MEMORY</div>
+      <h2 class="section-title">Sobre este lugar</h2>
+      <div class="grid-layout">
+        <article class="entry">
+          <h3>Un pequeño mausoleo digital</h3>
+          <p>Vanitas Archive es un lugar donde guardar aquello que deja huella: videojuegos que parecen sueños, fotografías cubiertas de lluvia y pensamientos escritos en noches de silencio.</p>
+        </article>
+        <div class="quote-box">
+          <p>“Some things are more beautiful when they decay.”</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="library">
+      <h2 class="section-title">Estanterías del archivo</h2>
+      <div class="library">
+        <div class="shelf">
+          <div class="book">
+            <div class="spine"></div>
+            <div class="cover">
+              <h3>RPG de terror</h3>
+              <span>12 · MAY · 2026</span>
+            </div>
+            <div class="pages">Viejos mundos donde la soledad pesa más que el terror.</div>
+          </div>
+          <div class="book">
+            <div class="spine"></div>
+            <div class="cover">
+              <h3>Silent Hill</h3>
+              <span>archivo visual</span>
+            </div>
+            <div class="pages">Niebla eterna y decadencia emocional.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="music-player">
+    <div class="music-header">
+      <div class="vinyl" id="vinyl-disc"></div>
+      <div>
+        <p class="music-title">Melancholy requiem</p>
+        <p class="music-subtitle">gramophone archive</p>
+      </div>
+    </div>
+    
+    <!-- PISTA DE AUDIO -->
+    <audio id="audio-track" controls loop>
+      <source src="Melancholy_Requiem.mp3" type="audio/mpeg">
+      Tu navegador no soporta el elemento de audio.
+    </audio>
+  </div>
+
+  <footer>VANITAS ARCHIVE — a digital mausoleum for forgotten things.</footer>
+
+  <script>
+    const glow = document.querySelector(".cursor-glow");
+    document.addEventListener("mousemove", (e) => {
+      glow.style.left = e.clientX + "px";
+      glow.style.top = e.clientY + "px";
+    });
+
+    // Control de animación del disco
+    const audio = document.getElementById('audio-track');
+    const vinyl = document.getElementById('vinyl-disc');
+
+    audio.onplay = () => { vinyl.style.animationPlayState = 'running'; };
+    audio.onpause = () => { vinyl.style.animationPlayState = 'paused'; };
+  </script>
+</body>
+</html>
