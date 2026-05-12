@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Vanitas Archive | Biblioteca Olvidada</title>
+  <title>Vanitas Archive</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,155 +15,151 @@
     html{ scroll-behavior:smooth; }
 
     body {
-      background:#050505;
+      background:#0a0a0a;
       color:#d8d2ca;
       font-family:'Cormorant Garamond', serif;
       min-height:100vh;
       overflow-x:hidden;
       position:relative;
-      /* Cursor Vela Pixel Art */
       cursor: url('velita.png') 32 5, auto;
     }
 
-    a, .book, button { cursor: url('velita.png') 32 5, pointer; }
-
-    /* AMBIENTE: OSCURIDAD Y POLVO */
-    .darkness {
-      position:fixed; inset:0;
-      background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.95) 100%);
-      pointer-events:none; z-index:10;
-    }
-
-    .cursor-glow {
-      position:fixed; width:400px; height:400px; border-radius:50%;
-      background:radial-gradient(circle, rgba(255,180,80,0.15) 0%, transparent 70%);
+    /* EL RESPLANDOR DE LA VELA */
+    .ambient-glow {
+      position:fixed; width:600px; height:600px; border-radius:50%;
+      background:radial-gradient(circle, rgba(255,180,80,0.08) 0%, transparent 70%);
       pointer-events:none; transform:translate(-50%,-50%);
-      z-index:11; mix-blend-mode:screen; filter:blur(25px);
-      animation: flicker 4s infinite alternate;
+      z-index:1; mix-blend-mode:screen; filter:blur(40px);
     }
 
-    @keyframes flicker {
-      0% { opacity:0.7; transform:translate(-50%,-50%) scale(1); }
-      100% { opacity:1; transform:translate(-50%,-50%) scale(1.08); }
-    }
-
+    /* POLVO DINÁMICO */
     .dust-container { position: fixed; inset: 0; pointer-events: none; z-index: 12; }
     .particle {
-      position: absolute; background: rgba(255, 255, 255, 0.15);
-      border-radius: 50%; animation: float-particle linear infinite;
+      position: absolute; 
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%; 
+      animation: float-particle linear infinite;
     }
     @keyframes float-particle {
-      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-      20% { opacity: 0.2; }
-      80% { opacity: 0.2; }
-      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      20% { opacity: 0.3; }
+      80% { opacity: 0.3; }
+      100% { transform: translate(100px, -100vh) rotate(360deg); opacity: 0; }
     }
 
-    /* CONTENIDO PRINCIPAL */
+    /* CONTENIDO */
     header {
-      height: 60vh; display: flex; flex-direction: column; 
+      height: 45vh; display: flex; flex-direction: column; 
       justify-content: center; align-items: center; text-align: center;
       position: relative; z-index: 5;
     }
-    h1 { font-size: 4.5rem; font-weight: 300; letter-spacing: 0.4em; text-transform: uppercase; color: #f3e7d5; }
-    .subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; letter-spacing: 0.3em; color: #8a7b6d; margin-top: 10px; }
+    h1 { 
+      font-size: 4rem; font-weight: 300; letter-spacing: 0.3em; 
+      text-transform: uppercase; color: #f3e7d5;
+    }
+    .subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; letter-spacing: 0.4em; color: #8a7b6d; margin-top: 15px; }
 
-    main { width: min(1200px, 90%); margin: auto; padding-bottom: 10rem; position: relative; z-index: 5; }
+    main { width: min(1100px, 90%); margin: auto; padding-bottom: 8rem; position: relative; z-index: 5; }
 
-    /* ESTANTERÍAS (BIBLIOTECA) */
-    .shelf-container { margin-bottom: 6rem; }
+    /* ESTANTERÍAS */
+    .shelf-container { margin-bottom: 5rem; }
     .shelf-title { 
-      font-size: 1.8rem; margin-bottom: 2rem; color: #b7a38d; 
-      border-bottom: 1px solid rgba(183,163,141,0.2); display: inline-block; padding-right: 3rem;
+      font-size: 1.5rem; margin-bottom: 1.5rem; color: #b7a38d; 
+      border-bottom: 1px solid rgba(183,163,141,0.2); display: inline-block; padding-right: 2rem;
+      font-style: italic;
     }
 
     .shelf {
-      display: flex; gap: 15px; align-items: flex-end;
-      padding: 0 20px 15px 20px;
-      background: linear-gradient(to bottom, transparent 90%, #1a1512 90%, #0a0807 100%);
-      border-bottom: 4px solid #1a1512;
-      min-height: 320px;
+      display: flex; gap: 12px; align-items: flex-end;
+      padding: 0 20px 10px 20px;
+      background: linear-gradient(to bottom, transparent 85%, #15110f 85%, #050505 100%);
+      border-bottom: 3px solid #1a1512;
+      min-height: 300px;
     }
 
-    /* LIBROS INDIVIDUALES */
+    /* LIBROS */
     .book {
-      width: 60px; height: 260px; position: relative;
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 55px; height: 250px; position: relative;
+      transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
       transform-style: preserve-3d;
       perspective: 1000px;
     }
 
     .spine {
       position: absolute; inset: 0;
-      background: #2a1e16; border-left: 2px solid rgba(255,255,255,0.05);
+      background: #231a14; border-left: 1px solid rgba(255,255,255,0.03);
       display: flex; align-items: center; justify-content: center;
-      box-shadow: inset -5px 0 10px rgba(0,0,0,0.5);
+      box-shadow: inset -3px 0 10px rgba(0,0,0,0.5);
       z-index: 2;
     }
 
     .spine span {
       transform: rotate(90deg); white-space: nowrap;
-      font-size: 0.9rem; letter-spacing: 1px; color: rgba(216,210,202,0.7);
+      font-size: 0.8rem; letter-spacing: 1px; color: rgba(216,210,202,0.8);
       font-family: 'IBM Plex Mono', monospace;
     }
 
     .cover {
-      position: absolute; top: 0; left: 0; width: 200px; height: 100%;
-      background: #1e1612; padding: 2rem; 
+      position: absolute; top: 0; left: 0; width: 260px; height: 100%;
+      /* CAMBIO CLAVE: Fondo totalmente opaco */
+      background: #1a1411; 
+      opacity: 1; /* Aseguramos opacidad total */
+      padding: 2rem; 
       transform-origin: left; transform: rotateY(-90deg);
-      opacity: 0; transition: all 0.5s;
-      box-shadow: 10px 0 30px rgba(0,0,0,0.8);
-      border: 1px solid rgba(191,155,107,0.1);
-      z-index: 1;
+      transition: all 0.5s ease;
+      box-shadow: 20px 5px 40px rgba(0,0,0,0.9);
+      border: 1px solid rgba(183,163,141,0.2);
+      z-index: 10; /* Por encima de todo cuando se abre */
+      visibility: hidden;
     }
 
-    .cover h4 { font-size: 1.5rem; color: #f0e2c6; margin-bottom: 1rem; }
-    .cover p { font-size: 0.95rem; line-height: 1.6; color: #a79a8d; }
+    .book:hover { width: 280px; }
+    .book:hover .cover { 
+      transform: rotateY(0deg); 
+      visibility: visible;
+      opacity: 1;
+    }
+    .book:hover .spine { opacity: 0.2; }
 
-    /* HOVER: EL LIBRO SE ABRE */
-    .book:hover { width: 240px; transform: translateX(10px); }
-    .book:hover .spine { opacity: 0.3; }
-    .book:hover .cover { transform: rotateY(0deg); opacity: 1; }
+    .cover h4 { font-size: 1.4rem; color: #f0e2c6; margin-bottom: 0.8rem; }
+    .cover p { font-size: 0.95rem; line-height: 1.6; color: #c2b5a7; }
 
-    /* COLORES DE LOMOS (Temáticas) */
-    .manga .spine { background: #3d1414; } /* Rojo oscuro */
-    .games .spine { background: #14213d; } /* Azul noche */
-    .thoughts .spine { background: #1b261b; } /* Verde bosque */
+    /* COLORES DE LOMOS */
+    .manga .spine { border-right: 4px solid #5a1a1a; }
+    .games .spine { border-right: 4px solid #1a2a4a; }
+    .thoughts .spine { border-right: 4px solid #1a3a1a; }
 
     /* REPRODUCTOR */
     .music-player {
-      position: fixed; bottom: 20px; left: 20px; width: 280px;
-      background: rgba(10,8,6,0.95); border: 1px solid rgba(191,155,107,0.1);
-      padding: 1rem; z-index: 100; backdrop-filter: blur(10px);
+      position: fixed; bottom: 25px; left: 25px; width: 260px;
+      background: rgba(15,12,10,0.95); border: 1px solid rgba(183,163,141,0.1);
+      padding: 1rem; z-index: 100; backdrop-filter: blur(8px);
     }
     .vinyl { 
-      width: 40px; height: 40px; border-radius: 50%;
-      background: radial-gradient(circle, #222 25%, #000 100%);
-      border: 1px solid rgba(183,163,141,0.2); animation: spin 10s linear infinite;
-      animation-play-state: paused;
+      width: 35px; height: 35px; border-radius: 50%;
+      background: radial-gradient(circle, #333 20%, #000 100%);
+      animation: spin 8s linear infinite; animation-play-state: paused;
     }
     @keyframes spin { from {transform: rotate(0)} to {transform: rotate(360deg)} }
-    audio { width: 100%; height: 30px; filter: sepia(100%) invert(100%) brightness(0.7); opacity: 0.4; margin-top: 10px; }
+    audio { width: 100%; height: 25px; filter: sepia(0.5) invert(0.9); opacity: 0.5; margin-top: 10px; }
 
     @media (max-width: 768px) {
-      .book:hover { width: 60px; } /* Desactivar apertura en móvil */
-      h1 { font-size: 2.5rem; }
+      .book:hover { width: 55px; }
+      .cover { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <div class="darkness"></div>
-  <div class="cursor-glow"></div>
+  <div class="ambient-glow" id="glow"></div>
   <div class="dust-container" id="dust-container"></div>
 
   <header>
     <h1>Vanitas Archive</h1>
-    <p class="subtitle">ENTRADA AL MAUSOLEO DIGITAL</p>
+    <p class="subtitle">UN RINCÓN PARA LO OLVIDADO</p>
   </header>
 
   <main>
-    <!-- ESTANTERÍA 1 -->
     <div class="shelf-container">
       <h2 class="shelf-title">Lecturas & Manga</h2>
       <div class="shelf">
@@ -171,20 +167,19 @@
           <div class="spine"><span>BERSERK</span></div>
           <div class="cover">
             <h4>Berserk</h4>
-            <p>Reflexiones sobre el destino, la lucha eterna y el arte de Miura en el eclipse.</p>
+            <p>El sacrificio y la voluntad humana en la obra de Kentaro Miura.</p>
           </div>
         </div>
-        <div class="book manga">
-          <div class="spine"><span>OYASUMI PUNPUN</span></div>
+        <div class="book manga" style="height: 270px;">
+          <div class="spine"><span>VAGABOND</span></div>
           <div class="cover">
-            <h4>Buenas noches, Punpun</h4>
-            <p>Cuando el vacío se dibuja con trazos realistas. Una herida abierta en papel.</p>
+            <h4>Vagabond</h4>
+            <p>El camino de Musashi hacia la verdadera fuerza y la paz interior.</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ESTANTERÍA 2 -->
     <div class="shelf-container">
       <h2 class="shelf-title">Mundos Virtuales</h2>
       <div class="shelf">
@@ -192,28 +187,7 @@
           <div class="spine"><span>SILENT HILL 2</span></div>
           <div class="cover">
             <h4>Silent Hill 2</h4>
-            <p>La niebla como espejo del alma. James Sunderland y su penitencia en 128 bits.</p>
-          </div>
-        </div>
-        <div class="book games" style="height: 240px;"> <!-- Diferente altura para realismo -->
-          <div class="spine"><span>ELDEN RING</span></div>
-          <div class="cover">
-            <h4>Elden Ring</h4>
-            <p>La belleza de un mundo en ruinas. Crónica de mi viaje por las Tierras Intermedias.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ESTANTERÍA 3 -->
-    <div class="shelf-container">
-      <h2 class="shelf-title">Reflexiones</h2>
-      <div class="shelf">
-        <div class="book thoughts">
-          <div class="spine"><span>NOCHE 01</span></div>
-          <div class="cover">
-            <h4>Sobre la soledad</h4>
-            <p>A veces el silencio de este archivo es el único refugio que queda.</p>
+            <p>Un viaje psicológico a través de la culpa y el castigo.</p>
           </div>
         </div>
       </div>
@@ -221,9 +195,9 @@
   </main>
 
   <div class="music-player">
-    <div style="display: flex; align-items: center; gap: 15px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
       <div class="vinyl" id="vinyl-disc"></div>
-      <p style="font-size: 0.8rem; font-family: 'IBM Plex Mono'; color: #b7a38d;">Melancholy requiem</p>
+      <p style="font-size: 0.7rem; font-family: 'IBM Plex Mono'; color: #8a7b6d;">Melancholy requiem</p>
     </div>
     <audio id="audio-track" controls loop>
       <source src="Melancholy_Requiem.mp3" type="audio/mpeg">
@@ -231,28 +205,25 @@
   </div>
 
   <script>
-    // Brillo de la vela
-    const glow = document.querySelector(".cursor-glow");
+    const glow = document.getElementById('glow');
     document.addEventListener("mousemove", (e) => {
       glow.style.left = e.clientX + "px";
       glow.style.top = e.clientY + "px";
     });
 
-    // Polvo dinámico
     const container = document.getElementById('dust-container');
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 70; i++) {
       const p = document.createElement('div');
       p.className = 'particle';
-      const size = Math.random() * 2 + 1 + 'px';
+      const size = Math.random() * 3 + 1 + 'px';
       p.style.width = size; p.style.height = size;
       p.style.left = Math.random() * 100 + 'vw';
       p.style.top = Math.random() * 100 + 'vh';
-      p.style.animationDuration = Math.random() * 15 + 10 + 's';
+      p.style.animationDuration = Math.random() * 10 + 10 + 's';
       p.style.animationDelay = Math.random() * 10 + 's';
       container.appendChild(p);
     }
 
-    // Audio
     const audio = document.getElementById('audio-track');
     const vinyl = document.getElementById('vinyl-disc');
     audio.onplay = () => { vinyl.style.animationPlayState = 'running'; };
